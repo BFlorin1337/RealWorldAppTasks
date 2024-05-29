@@ -1,10 +1,8 @@
 {
-  "testuser": {
-    "username": "Katharina_Bernier",
-    "password": "s3cret"
-  },
-  "invaliduser": {
-    "username": "invalid_username",
-    "password": "invalid_password"
-  }
+  "firstName": "Florin",
+  "lastName": "Bocse",
+  "username": "FlorinBocse",
+  "password": "pass1234",
+  "email": "FlorinBocse@email.com",
+  "phoneNumber": "0798822542"
 }
