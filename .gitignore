@@ -23,4 +23,6 @@ node_modules
 
 ## Cypress
 **/screenshots
+**/videos
+**/report
 **/mochawesome-report
