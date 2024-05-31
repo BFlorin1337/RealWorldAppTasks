@@ -1,4 +1,19 @@
+import SignupPage from '../page_objects/signupPage';
+import UserSettingsPage from '../page_objects/userSettingsPage';
+import BankAccountPage from '../page_objects/bankAccountPage';
+import AccountBankRegister from '../page_objects/accountBankRegister';
+import AccountDetails from '../page_objects/accountDetails';
+import TransactionPage from '../page_objects/transactionPage';
+import TransactionDetailPage from '../page_objects/transactionDetailPage';
+
 let userData;
+const signupPage = new SignupPage();
+const userSettingsPage = new UserSettingsPage();
+const bankAccountPage = new BankAccountPage();
+const accountBankRegister = new AccountBankRegister();
+const accountDetails = new AccountDetails();
+const transactionPage = new TransactionPage();
+const transactionDetailPage = new TransactionDetailPage();
 
 before(() => {
   cy.fixture('users').then((user) => {
@@ -6,16 +21,16 @@ before(() => {
   });
 });
 
-describe("E2E tests on a Cypress Real World App demo", () => {
+describe("E2E tests on the RWA bank.", () => {
 
   before(() => {
-    cy.visit("http://localhost:3000/signup");
-    cy.get("#firstName").type(userData.firstName);
-    cy.get("#lastName").type(userData.lastName);
-    cy.get("#username").type(userData.username);
-    cy.get("#password").type(userData.password);
-    cy.get("#confirmPassword").type(userData.password);
-    cy.get('[data-test="signup-submit"]').should("be.visible").and("not.be.disabled").click()
+    signupPage.visit();
+    signupPage.fillFirstName(userData.firstName);
+    signupPage.fillLastName(userData.lastName);
+    signupPage.fillUsername(userData.username);
+    signupPage.fillPassword(userData.password);
+    signupPage.fillConfirmPassword(userData.password);
+    signupPage.submit();
   });
 
   beforeEach(() => {
@@ -23,91 +38,80 @@ describe("E2E tests on a Cypress Real World App demo", () => {
   });
 
   it("Should register a new account and log in", () => {
-    cy.get('[data-test="user-onboarding-next"]').click();
-    cy.get("#bankaccount-bankName-input").type("Bank of Romania");
-    cy.get("#bankaccount-routingNumber-input").type("000123456");
-    cy.get("#bankaccount-accountNumber-input").type("013156473");
-    cy.get('[data-test="bankaccount-submit"]').click();
-    cy.get('[data-test="user-onboarding-next"]').click();
-    cy.url().should("eq", "http://localhost:3000/");
+    accountBankRegister.userOnboardingNext();
+    accountBankRegister.bankNameInput();
+    accountBankRegister.bankRoutingInput();
+    accountBankRegister.bankAccountNumber();
+    accountBankRegister.bankAccountSubmit();
+    accountBankRegister.userOnboardingNext();
+    accountBankRegister.userLoginTest();
   });
 
   it("Should see account details and account balance", () => {
-    cy.url().should("eq", "http://localhost:3000/");
-    cy.get('[data-test="sidenav-username"]').should("have.text", "@" + userData.username);
-    cy.get('[data-test="sidenav-user-settings"]').click();
-    cy.get("#user-settings-firstName-input").should("have.value", userData.firstName);
-    cy.get("#user-settings-lastName-input").should("have.value", userData.lastName);
-    cy.get('[data-test="sidenav-user-balance"]').should("have.text", "$0.00");
+    accountDetails.userLoginTest();
+    accountDetails.usernameCheck(userData);
+    accountDetails.clickUserSettings();
+    accountDetails.inputFirstName(userData);
+    accountDetails.inputLastName(userData);
+    accountDetails.checkUserBalance();
   });
 
   it("Should update account user settings", () => {
-    cy.get('[data-test="sidenav-user-settings"]').click();
-    cy.get("#user-settings-email-input").clear().type(userData.email).should("have.value", userData.email);
-    cy.get("#user-settings-phoneNumber-input").clear().type(userData.phoneNumber).should("have.value", userData.phoneNumber);
-    cy.get('[data-test="user-settings-submit"]').click();
-    cy.get("#user-settings-firstName-input").should("have.value", userData.firstName);
-    cy.get("#user-settings-lastName-input").should("have.value", userData.lastName);
-    cy.get("#user-settings-email-input").should("have.value", userData.email);
-    cy.get("#user-settings-phoneNumber-input").should("have.value", userData.phoneNumber);
+    userSettingsPage.clickUserSettings();
+    userSettingsPage.fillEmail(userData.email);
+    userSettingsPage.fillPhoneNumber(userData.phoneNumber);
+    userSettingsPage.submit();
+    userSettingsPage.verifyUserSettings(userData.firstName, userData.lastName, userData.email, userData.phoneNumber);
   });
 
   it("Should add new bank account", () => {
-    cy.get('[data-test="sidenav-bankaccounts"]').click();
-    cy.get('[data-test="bankaccount-new"]').click();
-    cy.get("#bankaccount-bankName-input").type("Bank of New Romania");
-    cy.get("#bankaccount-routingNumber-input").type("654321000");
-    cy.get("#bankaccount-accountNumber-input").type("374651310");
-    cy.get('[data-test="bankaccount-submit"]').click();
-    cy.contains('[data-test="bankaccount-list"]', "Bank of New Romania").should("be.visible");
+    bankAccountPage.clickBankAccounts();
+    bankAccountPage.addNewBankAccount("Bank of New Romania", "654321000", "374651310");
+    bankAccountPage.verifyBankAccount("Bank of New Romania");
   });
 
   it("Should delete bank account", () => {
-    cy.get('[data-test="sidenav-bankaccounts"]').click();
-    cy.contains('[data-test="bankaccount-list"]', "Bank of Romania").parent().find('[data-test="bankaccount-delete"]').first().click();
-    cy.contains('[data-test="bankaccount-list"]', "Bank of Romania (Deleted)").should("exist");
+    bankAccountPage.clickBankAccounts();
+    bankAccountPage.deleteBankAccount("Bank of Romania");
   });
 
   it("Should submit account payment transaction and view transaction details", () => {
-    cy.get('[data-test="nav-personal-tab"]').click();
-    cy.get('[data-test="transaction-list-empty-create-transaction-button"]').click();
-    cy.get("#user-list-search-input").type("Edgar Johns", { force: true });
-    cy.contains('[data-test="users-list"] li', 'Edgar Johns').click({ force: true });
-    cy.get("#amount").type("10000");
-    cy.get("#transaction-create-description-input").type("Example of a test payment transaction.");
-    cy.get('[data-test="transaction-create-submit-payment"]').click();
+    transactionPage.navigateToPersonalTab();
+    transactionPage.createNewTransaction();
+    transactionPage.searchUser("Edgar Johns");
+    transactionPage.fillTransactionDetails("10000", "Example of a test payment transaction.");
+    transactionPage.submitPayment();
     cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Paid $10,000.00 for Example of a test payment transaction.");
-    cy.get('[data-test="new-transaction-return-to-transactions"]').click();
-    cy.get('[data-test="nav-personal-tab"]').click();
-    cy.get('[data-test^="transaction-item"]').first().click({ force: true });
-    cy.contains('[data-test="transaction-detail-header"]', 'Transaction Detail').should('be.visible');
+    transactionPage.returnToTransactions();
+    transactionPage.navigateToPersonalTab();
+    transactionPage.viewFirstTransaction();
+    transactionDetailPage.verifyTransactionDetailVisible();
   });
 
   it("Should submit payment request transaction", () => {
-    cy.get('[data-test="nav-top-new-transaction"]').click();
-    cy.get("#user-list-search-input").type("Edgar Johns", { force: true });
-    cy.contains('[data-test="users-list"] li', 'Edgar Johns').click({ force: true });
-    cy.get("#amount").type("10000");
-    cy.get("#transaction-create-description-input").type("Example of a test request transaction.");
-    cy.get('[data-test="transaction-create-submit-request"]').click();
+    transactionPage.navigateToPersonalTab();
+    transactionPage.createNewTransaction();
+    transactionPage.searchUser("Edgar Johns");
+    transactionPage.fillTransactionDetails("10000", "Example of a test request transaction.");
+    transactionPage.submitRequest();
     cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Requested $10,000.00 for Example of a test request transaction.");
-    cy.get('[data-test="new-transaction-return-to-transactions"]').click();
-    cy.get('[data-test="nav-personal-tab"]').click();
-    cy.get('[data-test^="transaction-item"]').first().click({ force: true });
-    cy.contains('[data-test="transaction-detail-header"]', 'Transaction Detail').should('be.visible');
+    transactionPage.returnToTransactions();
+    transactionPage.navigateToPersonalTab();
+    transactionPage.viewFirstTransaction();
+    transactionDetailPage.verifyTransactionDetailVisible();
   });
 
   it("Should be able to like and comment on transaction", () => {
-    cy.get('[data-test="nav-personal-tab"]').click();
-    cy.get('[data-test^="transaction-item"]').first().click({ force: true });
-    cy.get('[data-test^="transaction-like-button-"]').first().click();
-    cy.get('[data-test^="transaction-like-count-"]').first().should("contain", "1");
-    cy.get('[data-test^="transaction-comment-input-"]').first().type("Example of a comment.").type("{enter}");
-    cy.get('[data-test^="transaction-comment"]').should("be.visible");
+    transactionPage.navigateToPersonalTab();
+    transactionPage.viewFirstTransaction();
+    transactionDetailPage.likeFirstTransaction();
+    transactionDetailPage.verifyLikeCount("1");
+    transactionDetailPage.commentOnTransaction("Example of a comment.");
+    transactionDetailPage.verifyCommentVisible();
   });
 
   it("Should see account transaction history", () => {
-    cy.get('[data-test="nav-personal-tab"]').click();
-    cy.get('[data-test^="transaction-list"]').should("exist");
+    transactionPage.navigateToPersonalTab();
+    transactionDetailPage.verifyTransactionHistoryExists();
   });
 });
