@@ -81,7 +81,7 @@ describe("E2E tests on the RWA bank.", () => {
     transactionPage.searchUser("Edgar Johns");
     transactionPage.fillTransactionDetails("10000", "Example of a test payment transaction.");
     transactionPage.submitPayment();
-    cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Paid $10,000.00 for Example of a test payment transaction.");
+    transactionPage.paymentPayCheck()
     transactionPage.returnToTransactions();
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();
@@ -94,7 +94,7 @@ describe("E2E tests on the RWA bank.", () => {
     transactionPage.searchUser("Edgar Johns");
     transactionPage.fillTransactionDetails("10000", "Example of a test request transaction.");
     transactionPage.submitRequest();
-    cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Requested $10,000.00 for Example of a test request transaction.");
+    transactionPage.paymentRequestCheck();
     transactionPage.returnToTransactions();
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();

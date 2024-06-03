@@ -16,6 +16,12 @@ class TransactionPage {
     submitPayment() {
         cy.get('[data-test="transaction-create-submit-payment"]').click();
     }
+    paymentPayCheck() {
+        cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Paid $10,000.00 for Example of a test payment transaction.");
+    }
+    paymentRequestCheck() {
+        cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Requested $10,000.00 for Example of a test request transaction.");
+    }
     submitRequest() {
         cy.get('[data-test="transaction-create-submit-request"]').click();
     }
