@@ -1,21 +1,47 @@
 class AccountBankRegister {
+    get onboardingNextButton() {
+        return cy.get('[data-test="user-onboarding-next"]');
+    }
+
+    get bankNameInput() {
+        return cy.get("#bankaccount-bankName-input");
+    }
+
+    get routingNumberInput() {
+        return cy.get("#bankaccount-routingNumber-input");
+    }
+
+    get accountNumberInput() {
+        return cy.get("#bankaccount-accountNumber-input");
+    }
+
+    get submitButton() {
+        return cy.get('[data-test="bankaccount-submit"]');
+    }
+
     userOnboardingNext() {
-        cy.get('[data-test="user-onboarding-next"]').click();
+        this.onboardingNextButton.click();
     }
-    bankNameInput() {
-        cy.get("#bankaccount-bankName-input").type("Bank of Romania");
+
+    fillBankName(bankName) {
+        this.bankNameInput.type(bankName);
     }
-    bankRoutingInput() {
-        cy.get("#bankaccount-routingNumber-input").type("000123456");
+
+    fillRoutingNumber(routingNumber) {
+        this.routingNumberInput.type(routingNumber);
     }
-    bankAccountNumber() {
-        cy.get("#bankaccount-accountNumber-input").type("013156473");
+
+    fillAccountNumber(accountNumber) {
+        this.accountNumberInput.type(accountNumber);
     }
-    bankAccountSubmit() {
-        cy.get('[data-test="bankaccount-submit"]').click();
+
+    submitBankAccount() {
+        this.submitButton.click();
     }
+
     userLoginTest() {
         cy.url().should("eq", "http://localhost:3000/");
     }
 }
-export default AccountBankRegister
+
+export default AccountBankRegister;

@@ -39,10 +39,10 @@ describe("E2E tests on the RWA bank.", () => {
 
   it("Should register a new account and log in", () => {
     accountBankRegister.userOnboardingNext();
-    accountBankRegister.bankNameInput();
-    accountBankRegister.bankRoutingInput();
-    accountBankRegister.bankAccountNumber();
-    accountBankRegister.bankAccountSubmit();
+    accountBankRegister.fillBankName("Bank of Romania");
+    accountBankRegister.fillRoutingNumber("123456789");
+    accountBankRegister.fillAccountNumber("987654321");
+    accountBankRegister.submitBankAccount();
     accountBankRegister.userOnboardingNext();
     accountBankRegister.userLoginTest();
   });
@@ -81,7 +81,7 @@ describe("E2E tests on the RWA bank.", () => {
     transactionPage.searchUser("Edgar Johns");
     transactionPage.fillTransactionDetails("10000", "Example of a test payment transaction.");
     transactionPage.submitPayment();
-    transactionPage.paymentPayCheck()
+    transactionPage.paymentPayCheck();
     transactionPage.returnToTransactions();
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();
