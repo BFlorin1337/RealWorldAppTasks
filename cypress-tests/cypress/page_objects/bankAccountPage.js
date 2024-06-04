@@ -28,11 +28,11 @@ class BankAccountPage {
         this.submitButton.click();
     }
     verifyBankAccount(bankName) {
-        cy.contains('[data-test="bankaccount-list"]', bankName).should("be.visible");
+        return cy.contains('[data-test="bankaccount-list"]', bankName);
     }
     deleteBankAccount(bankName) {
         cy.contains('[data-test="bankaccount-list"]', bankName).parent().find('[data-test="bankaccount-delete"]').first().click();
-        cy.contains('[data-test="bankaccount-list"]', `${bankName} (Deleted)`).should("exist");
+        return cy.contains('[data-test="bankaccount-list"]', `${bankName} (Deleted)`);
     }
 }
 export default BankAccountPage;

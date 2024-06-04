@@ -1,21 +1,21 @@
 class AccountDetails {
     userLoginTest() {
-        cy.url().should("eq", "http://localhost:3000/");
+        return cy.url();
     }
     usernameCheck(userData) {
-        cy.get('[data-test="sidenav-username"]').should("have.text", "@" + userData.username);
+        return cy.get('[data-test="sidenav-username"]');
     }
     clickUserSettings() {
         cy.get('[data-test="sidenav-user-settings"]').click();
     }
     inputFirstName(userData) {
-        cy.get("#user-settings-firstName-input").should("have.value", userData.firstName);
+        return cy.get("#user-settings-firstName-input");
     }
     inputLastName(userData) {
-        cy.get("#user-settings-lastName-input").should("have.value", userData.lastName);
+        return cy.get("#user-settings-lastName-input");
     }
     checkUserBalance() {
-        cy.get('[data-test="sidenav-user-balance"]').should("have.text", "$0.00");
+        return cy.get('[data-test="sidenav-user-balance"]');
     }
 }
 export default AccountDetails;

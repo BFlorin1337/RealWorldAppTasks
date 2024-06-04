@@ -36,7 +36,7 @@ class SignupPage {
         this.confirmPasswordInput.type(password);
     }
     submit() {
-        this.submitButton.should("be.visible").and("not.be.disabled").click();
+        this.submitButton.click();
     }
 }
 export default SignupPage;

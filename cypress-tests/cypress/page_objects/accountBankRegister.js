@@ -30,7 +30,7 @@ class AccountBankRegister {
         this.submitButton.click();
     }
     userLoginTest() {
-        cy.url().should("eq", "http://localhost:3000/");
+        return cy.url();
     }
 }
 export default AccountBankRegister;

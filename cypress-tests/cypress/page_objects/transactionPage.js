@@ -47,10 +47,10 @@ class TransactionPage {
         this.submitRequestButton.click();
     }
     paymentPayCheck() {
-        cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Paid $10,000.00 for Example of a test payment transaction.");
+        return cy.get(".MuiGrid-root.MuiGrid-item");
     }
     paymentRequestCheck() {
-        cy.get(".MuiGrid-root.MuiGrid-item").should("contain", "Requested $10,000.00 for Example of a test request transaction.");
+        return cy.get(".MuiGrid-root.MuiGrid-item");
     }
     returnToTransactions() {
         this.returnToTransactionsButton.click();

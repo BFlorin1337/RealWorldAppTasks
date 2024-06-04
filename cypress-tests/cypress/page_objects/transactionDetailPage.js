@@ -1,21 +1,21 @@
 class TransactionDetailPage {
     verifyTransactionDetailVisible() {
-        cy.contains('[data-test="transaction-detail-header"]', 'Transaction Detail').should('be.visible');
+        return cy.contains('[data-test="transaction-detail-header"]', 'Transaction Detail');
     }
     likeFirstTransaction() {
         cy.get('[data-test^="transaction-like-button-"]').first().click();
     }
-    verifyLikeCount(count) {
-        cy.get('[data-test^="transaction-like-count-"]').first().should("contain", count);
+    verifyLikeCount() {
+        return cy.get('[data-test^="transaction-like-count-"]').first();
     }
     commentOnTransaction(comment) {
         cy.get('[data-test^="transaction-comment-input-"]').first().type(comment).type("{enter}");
     }
     verifyCommentVisible() {
-        cy.get('[data-test^="transaction-comment"]').should("be.visible");
+        return cy.get('[data-test^="transaction-comment"]');
     }
     verifyTransactionHistoryExists() {
-        cy.get('[data-test^="transaction-list"]').should("exist");
+        return cy.get('[data-test^="transaction-list"]');
     }
 }
 export default TransactionDetailPage;

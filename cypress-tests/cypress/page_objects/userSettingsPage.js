@@ -23,11 +23,5 @@ class UserSettingsPage {
     submit() {
         this.submitButton.click();
     }
-    verifyUserSettings(firstName, lastName, email, phoneNumber) {
-        cy.get("#user-settings-firstName-input").should("have.value", firstName);
-        cy.get("#user-settings-lastName-input").should("have.value", lastName);
-        this.emailInput.should("have.value", email);
-        this.phoneNumberInput.should("have.value", phoneNumber);
-    }
 }
 export default UserSettingsPage;

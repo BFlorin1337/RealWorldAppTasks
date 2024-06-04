@@ -25,12 +25,14 @@ describe("E2E tests on the RWA bank.", () => {
 
   before(() => {
     signupPage.visit();
+    cy.url().should('include', '/signup');
+
     signupPage.fillFirstName(userData.firstName);
     signupPage.fillLastName(userData.lastName);
     signupPage.fillUsername(userData.username);
     signupPage.fillPassword(userData.password);
     signupPage.fillConfirmPassword(userData.password);
-    signupPage.submit();
+    signupPage.submitButton.should("be.visible").and("not.be.disabled").click();
   });
 
   beforeEach(() => {
@@ -44,16 +46,16 @@ describe("E2E tests on the RWA bank.", () => {
     accountBankRegister.fillAccountNumber("987654321");
     accountBankRegister.submitBankAccount();
     accountBankRegister.userOnboardingNext();
-    accountBankRegister.userLoginTest();
+    accountBankRegister.userLoginTest().should("eq", "http://localhost:3000/");
   });
 
   it("Should see account details and account balance", () => {
-    accountDetails.userLoginTest();
-    accountDetails.usernameCheck(userData);
+    accountDetails.userLoginTest().should("eq", "http://localhost:3000/");
+    accountDetails.usernameCheck(userData).should("have.text", "@" + userData.username);
     accountDetails.clickUserSettings();
-    accountDetails.inputFirstName(userData);
-    accountDetails.inputLastName(userData);
-    accountDetails.checkUserBalance();
+    accountDetails.inputFirstName(userData).should("have.value", userData.firstName);
+    accountDetails.inputLastName(userData).should("have.value", userData.lastName);
+    accountDetails.checkUserBalance().should("have.text", "$0.00");
   });
 
   it("Should update account user settings", () => {
@@ -61,18 +63,19 @@ describe("E2E tests on the RWA bank.", () => {
     userSettingsPage.fillEmail(userData.email);
     userSettingsPage.fillPhoneNumber(userData.phoneNumber);
     userSettingsPage.submit();
-    userSettingsPage.verifyUserSettings(userData.firstName, userData.lastName, userData.email, userData.phoneNumber);
-  });
+    userSettingsPage.emailInput.should("have.value", userData.email);
+    userSettingsPage.phoneNumberInput.should("have.value", userData.phoneNumber);
+});
 
   it("Should add new bank account", () => {
     bankAccountPage.clickBankAccounts();
     bankAccountPage.addNewBankAccount("Bank of New Romania", "654321000", "374651310");
-    bankAccountPage.verifyBankAccount("Bank of New Romania");
+    bankAccountPage.verifyBankAccount("Bank of New Romania").should("be.visible");
   });
 
   it("Should delete bank account", () => {
     bankAccountPage.clickBankAccounts();
-    bankAccountPage.deleteBankAccount("Bank of Romania");
+    bankAccountPage.deleteBankAccount("Bank of Romania").should("exist");
   });
 
   it("Should submit account payment transaction and view transaction details", () => {
@@ -81,11 +84,11 @@ describe("E2E tests on the RWA bank.", () => {
     transactionPage.searchUser("Edgar Johns");
     transactionPage.fillTransactionDetails("10000", "Example of a test payment transaction.");
     transactionPage.submitPayment();
-    transactionPage.paymentPayCheck();
+    transactionPage.paymentPayCheck().should("contain", "Paid $10,000.00 for Example of a test payment transaction.");
     transactionPage.returnToTransactions();
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();
-    transactionDetailPage.verifyTransactionDetailVisible();
+    transactionDetailPage.verifyTransactionDetailVisible().should('be.visible');
   });
 
   it("Should submit payment request transaction", () => {
@@ -94,24 +97,24 @@ describe("E2E tests on the RWA bank.", () => {
     transactionPage.searchUser("Edgar Johns");
     transactionPage.fillTransactionDetails("10000", "Example of a test request transaction.");
     transactionPage.submitRequest();
-    transactionPage.paymentRequestCheck();
+    transactionPage.paymentRequestCheck().should("contain", "Requested $10,000.00 for Example of a test request transaction.");
     transactionPage.returnToTransactions();
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();
-    transactionDetailPage.verifyTransactionDetailVisible();
+    transactionDetailPage.verifyTransactionDetailVisible().should('be.visible');
   });
 
   it("Should be able to like and comment on transaction", () => {
     transactionPage.navigateToPersonalTab();
     transactionPage.viewFirstTransaction();
     transactionDetailPage.likeFirstTransaction();
-    transactionDetailPage.verifyLikeCount("1");
+    transactionDetailPage.verifyLikeCount().should("contain", "1");
     transactionDetailPage.commentOnTransaction("Example of a comment.");
-    transactionDetailPage.verifyCommentVisible();
+    transactionDetailPage.verifyCommentVisible().should("be.visible");
   });
 
   it("Should see account transaction history", () => {
     transactionPage.navigateToPersonalTab();
-    transactionDetailPage.verifyTransactionHistoryExists();
+    transactionDetailPage.verifyTransactionHistoryExists().should("exist");
   });
 });
